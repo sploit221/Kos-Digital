@@ -102,40 +102,11 @@ app.use('/penghuni', penghuniRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const server = app.listen(PORT, HOST, () => {
-  console.log('');
-  console.log('  ╭──────────────────────────────────────────────╮');
-  console.log('  │            KOS DIGITAL - PWA SERVER          │');
-  console.log('  ╰──────────────────────────────────────────────╯');
-  console.log(`  Lokal   : http://localhost:${PORT}`);
-  const interfaces = os.networkInterfaces();
-  for (const addresses of Object.values(interfaces)) {
-    for (const address of addresses || []) {
-      if (address.family === 'IPv4' && !address.internal) {
-        console.log(`  Jaringan: http://${address.address}:${PORT}`);
-      }
-    }
-  }
-  console.log('');
-  console.log('  Admin    : admin / admin123');
-  console.log('  Penghuni : daftarkan melalui panel admin');
-  console.log('');
-});
-
-function shutdown(signal) {
-  console.log(`\n${signal} diterima, menutup server...`);
-  server.close(() => {
-    try {
-      db.close();
-    } catch {
-      // ignore
-    }
-    process.exit(0);
-  });
-  setTimeout(() => process.exit(1), 5000).unref();
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = 3000;
+    app.listen(PORT, () => {
+        console.log(`Server Kos Digital berjalan lokal di http://localhost:${PORT}`);
+    });
 }
-
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
 
 module.exports = app;
