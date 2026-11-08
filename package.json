@@ -1,36 +1,32 @@
 {
   "name": "kos-digital",
   "version": "1.0.0",
-  "description": "Kos Digital - PWA manajemen kos dengan halaman publik, maintenance penghuni, dan laporan RT",
+  "description": "Kos Digital - PWA manajemen kos",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
-    "seed": "node db/seed.js",
-    "icons": "node scripts/generate-icons.js"
+    "dev": "node --watch server.js"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=18"
   },
   "keywords": [
     "kos",
     "pwa",
-    "express",
-    "sqlite",
-    "termux"
+    "express"
   ],
   "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
-    "compression": "^1.8.0",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.1",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "pdfkit": "^0.17.2"
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }
+
