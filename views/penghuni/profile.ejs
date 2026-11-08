@@ -1,0 +1,110 @@
+<%- include('../partials/head', { title: 'Profil Saya', bodyClass: 'bg-slate-100 text-slate-800' }) %>
+<div class="min-h-screen">
+  <%- include('../partials/penghuni-sidebar') %>
+  <div class="lg:pl-72">
+    <%- include('../partials/dash-topbar', { title: 'Profil Saya', subtitle: 'Kelola informasi kontak dan keamanan akun Anda.' }) %>
+
+    <main class="space-y-6 p-4 sm:p-6 lg:p-8">
+      <%- include('../partials/flash') %>
+
+      <section class="relative overflow-hidden rounded-2xl bg-white p-6 shadow-sm sm:p-8">
+        <div class="absolute right-0 top-0 h-40 w-40 rounded-full bg-brand-50 blur-2xl"></div>
+        <div class="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center gap-4">
+            <div class="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-xl font-extrabold text-white shadow-lg shadow-emerald-500/20"><%= initials(profile.name) %></div>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-xl font-extrabold tracking-tight text-slate-900"><%= profile.name %></h2>
+                <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[9px] font-bold text-emerald-700 ring-1 ring-inset ring-emerald-600/20">Penghuni Aktif</span>
+              </div>
+              <p class="mt-0.5 text-xs text-slate-500">@<%= profile.username %> &middot; Bergabung <%= formatDate(profile.created_at) %></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3 text-white">
+            <div>
+              <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Kamar</p>
+              <p class="text-2xl font-extrabold leading-none"><%= profile.room_number || '-' %></p>
+            </div>
+            <div class="border-l border-white/10 pl-3">
+              <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Tipe</p>
+              <p class="text-xs font-bold"><%= profile.room_type || '-' %></p>
+              <p class="text-[10px] text-slate-400"><%= formatRupiah(profile.monthly_price) %>/bln</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid gap-6 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div class="flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 text-slate-600"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+            <div><h2 class="text-base font-extrabold text-slate-900">Data Diri</h2><p class="text-xs text-slate-500">Perubahan data tertentu dilakukan oleh pengelola.</p></div>
+          </div>
+
+          <dl class="mt-5 space-y-1">
+            <div class="flex items-center justify-between gap-4 border-b border-slate-100 py-3">
+              <dt class="text-xs font-semibold text-slate-500">Nama Lengkap</dt>
+              <dd class="text-right text-xs font-bold text-slate-800"><%= profile.name %></dd>
+            </div>
+            <div class="flex items-center justify-between gap-4 border-b border-slate-100 py-3">
+              <dt class="text-xs font-semibold text-slate-500">Username</dt>
+              <dd class="text-right text-xs font-bold text-slate-800">@<%= profile.username %></dd>
+            </div>
+            <div class="flex items-center justify-between gap-4 border-b border-slate-100 py-3">
+              <dt class="text-xs font-semibold text-slate-500">NIK</dt>
+              <dd class="text-right font-mono text-xs font-bold text-slate-800"><%= profile.nik || '-' %></dd>
+            </div>
+            <div class="flex items-center justify-between gap-4 border-b border-slate-100 py-3">
+              <dt class="text-xs font-semibold text-slate-500">Asal</dt>
+              <dd class="text-right text-xs font-bold text-slate-800"><%= profile.origin || '-' %></dd>
+            </div>
+            <div class="flex items-center justify-between gap-4 py-3">
+              <dt class="text-xs font-semibold text-slate-500">Tanggal Masuk</dt>
+              <dd class="text-right text-xs font-bold text-slate-800"><%= formatDate(profile.created_at) %></dd>
+            </div>
+          </dl>
+
+          <div class="mt-3 rounded-xl bg-slate-50 p-3 text-[11px] leading-relaxed text-slate-500">Untuk perubahan NIK, nama, atau kamar, silakan hubungi pengelola kos melalui menu Peraturan &amp; Fasilitas.</div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="flex items-center gap-3">
+              <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M5 4h3l1.5 4-2 1.5a12 12 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16 16 0 0 1 3 6.2 2 2 0 0 1 5 4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+              <div><h2 class="text-base font-extrabold text-slate-900">Kontak</h2><p class="text-xs text-slate-500">Perbarui nomor telepon Anda.</p></div>
+            </div>
+            <form action="/penghuni/profile/contact" method="post" class="mt-4 flex gap-2">
+              <input name="phone" value="<%= profile.phone || '' %>" maxlength="20" placeholder="08xxxxxxxxxx" class="min-w-0 flex-1 rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              <button type="submit" class="rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-brand-700">Simpan</button>
+            </form>
+          </div>
+
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div class="flex items-center gap-3">
+              <span class="grid h-10 w-10 place-items-center rounded-xl bg-rose-50 text-rose-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M6 11V8a6 6 0 0 1 12 0v3M5 11h14v9H5z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div><h2 class="text-base font-extrabold text-slate-900">Ubah Password</h2><p class="text-xs text-slate-500">Gunakan kombinasi minimal 6 karakter.</p></div>
+            </div>
+            <form action="/penghuni/profile/password" method="post" class="mt-4 space-y-3">
+              <div>
+                <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Password Saat Ini</label>
+                <input name="current_password" type="password" required autocomplete="current-password" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Password Baru</label>
+                  <input name="new_password" type="password" required minlength="6" autocomplete="new-password" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+                </div>
+                <div>
+                  <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Konfirmasi</label>
+                  <input name="confirm_password" type="password" required minlength="6" autocomplete="new-password" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+                </div>
+              </div>
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800">Perbarui Password</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/end') %>

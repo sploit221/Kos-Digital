@@ -1,0 +1,15 @@
+<% if (typeof flash !== 'undefined' && flash) { %>
+  <div data-flash class="flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm shadow-sm animate-fade-up <%= flash.type === 'error' ? 'border-rose-200 bg-rose-50 text-rose-800' : 'border-emerald-200 bg-emerald-50 text-emerald-800' %>" role="status">
+    <span class="mt-0.5 shrink-0">
+      <% if (flash.type === 'error') { %>
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v4m0 4h.01M10.3 3.9 2.4 17.4A1.9 1.9 0 0 0 4 20.3h16a1.9 1.9 0 0 0 1.6-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <% } else { %>
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4.2 4.2L19 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <% } %>
+    </span>
+    <p class="flex-1 font-medium"><%= flash.message %></p>
+    <button type="button" data-dismiss-flash class="shrink-0 rounded-lg p-1 opacity-60 transition hover:bg-black/5 hover:opacity-100" aria-label="Tutup notifikasi">
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+<% } %>

@@ -1,0 +1,6 @@
+  <script src="/js/app.js" defer></script>
+  <% if (typeof pageScript !== 'undefined' && pageScript) { %>
+    <script src="/js/<%= pageScript %>" defer></script>
+  <% } %>
+</body>
+</html>

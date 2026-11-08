@@ -1,0 +1,178 @@
+<%- include('../partials/head', { title: 'Pengaturan Kos', bodyClass: 'bg-slate-100 text-slate-800' }) %>
+<%
+const facilityText = (settings.facilities || []).map((item) => `${item.name} | ${item.description || ''}`).join('\n');
+const locationText = (settings.locations || []).map((item) => {
+  const access = item.access || [item.distance, item.travel_time].filter(Boolean).join(' - ');
+  const parts = [item.name, item.category || '', access || '', item.maps_url || '', item.photo_url || ''];
+  while (parts.length > 1 && !parts[parts.length - 1]) parts.pop();
+  return parts.join(' | ');
+}).join('\n');
+const rulesText = (settings.rules || []).map((item) => `${item.title} | ${item.description || ''}`).join('\n');
+%>
+<div class="min-h-screen">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="lg:pl-72">
+    <%- include('../partials/dash-topbar', { title: 'Pengaturan Kos', subtitle: 'Kelola profil, fasilitas, keamanan, dan peraturan yang tampil di halaman publik.' }) %>
+
+    <main class="space-y-6 p-4 sm:p-6 lg:p-8">
+      <%- include('../partials/flash') %>
+
+      <nav class="sticky top-20 z-20 -mx-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white/90 p-1.5 shadow-sm backdrop-blur">
+        <div class="flex min-w-max items-center gap-1">
+          <a href="#profil" class="rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100">Profil Kos</a>
+          <a href="#fasilitas" class="rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100">Fasilitas</a>
+          <a href="#lokasi" class="rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100">Akses Lokasi</a>
+          <a href="#keamanan" class="rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100">Keamanan</a>
+          <a href="#aturan" class="rounded-xl px-3.5 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100">Peraturan</a>
+        </div>
+      </nav>
+
+      <section id="profil" class="scroll-mt-36 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M3.5 10.4 12 3.5l8.5 6.9M5.5 9.4v9.1c0 .6.5 1.1 1.1 1.1h10.8c.6 0 1.1-.5 1.1-1.1V9.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h2 class="text-base font-extrabold text-slate-900">Profil Kos</h2><p class="text-xs text-slate-500">Informasi utama yang tampil di halaman publik.</p></div>
+        </div>
+
+        <form action="/admin/settings" method="post" class="mt-5 grid gap-4 sm:grid-cols-2">
+          <input type="hidden" name="section" value="profile">
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Nama Kos *</label>
+            <input name="name" value="<%= settings.kos_profile.name %>" required maxlength="80" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Tagline</label>
+            <input name="tagline" value="<%= settings.kos_profile.tagline || '' %>" maxlength="160" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Alamat</label>
+            <textarea name="address" rows="2" maxlength="300" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= settings.kos_profile.address %></textarea>
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Telepon</label>
+            <input name="phone" value="<%= settings.kos_profile.phone || '' %>" maxlength="30" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Nomor WhatsApp</label>
+            <input name="whatsapp" value="<%= settings.kos_profile.whatsapp || '' %>" maxlength="30" placeholder="62812..." class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Nama Pengelola</label>
+            <input name="manager" value="<%= settings.kos_profile.manager || '' %>" maxlength="80" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Deskripsi</label>
+            <textarea name="description" rows="4" maxlength="1200" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= settings.kos_profile.description %></textarea>
+          </div>
+          <div class="sm:col-span-2 flex justify-end">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Simpan Profil</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="fasilitas" class="scroll-mt-36 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3ZM6 12V6a2 2 0 0 1 2-2h1M12 12V5.5a2 2 0 0 1 2-2h1M7 19l-1 2M17 19l1 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h2 class="text-base font-extrabold text-slate-900">Fasilitas Kos</h2><p class="text-xs text-slate-500">Satu fasilitas per baris dengan format <b>Nama | Deskripsi</b>.</p></div>
+        </div>
+        <form action="/admin/settings" method="post" class="mt-5 space-y-3">
+          <input type="hidden" name="section" value="facilities">
+          <textarea name="facilities" rows="10" spellcheck="false" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-3 font-mono text-xs leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= facilityText %></textarea>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-[11px] text-slate-400">Contoh: <code class="rounded bg-slate-100 px-1.5 py-0.5 text-slate-600">WiFi Gratis | Internet fiber 100 Mbps</code></p>
+            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Simpan Fasilitas</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="lokasi" class="scroll-mt-36 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-sky-50 text-sky-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.7"/></svg></span>
+          <div><h2 class="text-base font-extrabold text-slate-900">Akses Lokasi</h2><p class="text-xs text-slate-500">Format: <b>Nama | Kategori | Info Akses | URL Google Maps | URL Foto</b>.</p></div>
+        </div>
+        <form action="/admin/settings" method="post" class="mt-5 space-y-3">
+          <input type="hidden" name="section" value="locations">
+          <textarea name="locations" rows="10" spellcheck="false" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-3 font-mono text-xs leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= locationText %></textarea>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-[11px] text-slate-400">Contoh: <code class="rounded bg-slate-100 px-1.5 py-0.5 text-slate-600">Mega Mall | Pusat Perbelanjaan | 5 menit berkendara | https://maps.google.com/... | https://contoh.com/foto.jpg</code></p>
+            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Simpan Lokasi</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="keamanan" class="scroll-mt-36 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-emerald-300"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.4 7.5 9.5 4.3-1.1 7.5-5.1 7.5-9.5V6L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div><h2 class="text-base font-extrabold text-slate-900">Keamanan Lingkungan</h2><p class="text-xs text-slate-500">Status CCTV, fingerprint, dan jadwal keamanan.</p></div>
+        </div>
+        <form action="/admin/settings" method="post" class="mt-5 grid gap-4 sm:grid-cols-2">
+          <input type="hidden" name="section" value="security">
+          <div class="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <label class="flex items-center justify-between gap-3">
+              <span><span class="block text-xs font-bold text-slate-700">CCTV Aktif</span><span class="text-[10px] text-slate-400">Tampilkan status CCTV aktif.</span></span>
+              <input type="checkbox" name="cctv_active" value="1" <%= settings.security.cctv_active ? 'checked' : '' %> class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+            </label>
+            <label class="flex items-center justify-between gap-3 border-t border-slate-200 pt-3">
+              <span><span class="block text-xs font-bold text-slate-700">Akses Fingerprint</span><span class="text-[10px] text-slate-400">Verifikasi sidik jari penghuni.</span></span>
+              <input type="checkbox" name="fingerprint" value="1" <%= settings.security.fingerprint ? 'checked' : '' %> class="h-5 w-5 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+            </label>
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Jumlah Titik CCTV</label>
+            <input name="cctv_count" type="number" min="0" max="999" value="<%= settings.security.cctv_count || 0 %>" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Jam Akses Gerbang</label>
+            <input name="gate_hours" value="<%= settings.security.gate_hours || '' %>" maxlength="160" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Jadwal Patroli</label>
+            <input name="patrol" value="<%= settings.security.patrol || '' %>" maxlength="200" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Catatan Keamanan</label>
+            <textarea name="notes" rows="3" maxlength="600" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= settings.security.notes || '' %></textarea>
+          </div>
+          <div class="sm:col-span-2 flex justify-end">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Simpan Keamanan</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="aturan" class="scroll-mt-36 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14H6V3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M15 3v4h4M9 12h7M9 16h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          <div><h2 class="text-base font-extrabold text-slate-900">Peraturan &amp; Tata Tertib</h2><p class="text-xs text-slate-500">Format aturan: <b>Judul | Deskripsi</b>. Ringkasan ketentuan diisi terpisah.</p></div>
+        </div>
+        <form action="/admin/settings" method="post" class="mt-5 space-y-4">
+          <input type="hidden" name="section" value="rules">
+          <textarea name="rules" rows="10" spellcheck="false" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-3 font-mono text-xs leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"><%= rulesText %></textarea>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Jam Kunjungan Tamu</label>
+              <input name="visitor_hours" value="<%= settings.rules_note.visitor_hours || '' %>" maxlength="80" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Batas Jam Malam</label>
+              <input name="curfew" value="<%= settings.rules_note.curfew || '' %>" maxlength="80" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Denda Keterlambatan Sewa</label>
+              <input name="late_penalty" value="<%= settings.rules_note.late_penalty || '' %>" maxlength="80" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div>
+              <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Denda Kerusakan</label>
+              <input name="damage_penalty" value="<%= settings.rules_note.damage_penalty || '' %>" maxlength="120" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+          </div>
+          <p class="text-[11px] leading-relaxed text-slate-400">Nama Pengelola dan Nomor WhatsApp pada bagian Profil Kos otomatis dipakai di halaman publik.</p>
+          <div class="flex justify-end">
+            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">Simpan Peraturan</button>
+          </div>
+        </form>
+      </section>
+
+      <p class="pb-4 text-center text-[11px] text-slate-400">Perubahan pengaturan langsung tampil di halaman publik dan dashboard penghuni.</p>
+    </main>
+  </div>
+</div>
+<%- include('../partials/end') %>

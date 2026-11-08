@@ -1,0 +1,201 @@
+<%- include('../partials/head', { title: 'Data Penghuni', bodyClass: 'bg-slate-100 text-slate-800' }) %>
+<div class="min-h-screen">
+  <%- include('../partials/admin-sidebar') %>
+  <div class="lg:pl-72">
+    <%- include('../partials/dash-topbar', { title: 'Data Penghuni', subtitle: 'Kelola akun penghuni, kamar, dan status administrasi RT.' }) %>
+
+    <main class="space-y-6 p-4 sm:p-6 lg:p-8">
+      <%- include('../partials/flash') %>
+
+      <section class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Penghuni Aktif</p>
+              <p class="mt-1.5 text-2xl font-extrabold text-slate-900"><%= stats.active %></p>
+            </div>
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M16 19c0-2.2-1.8-4-4-4H7c-2.2 0-4 1.8-4 4M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM17 11a3 3 0 1 0 0-6M21 19c0-1.8-1-3.3-2.5-3.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Sudah Checkout</p>
+              <p class="mt-1.5 text-2xl font-extrabold text-slate-900"><%= stats.inactive %></p>
+            </div>
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 text-slate-600"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M15 12H4m0 0 3-3m-3 3 3 3M10 4h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Belum Dilaporkan RT</p>
+              <p class="mt-1.5 text-2xl font-extrabold text-slate-900"><%= stats.unreported %></p>
+            </div>
+            <a href="/admin/reports/rt" class="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-700 transition hover:bg-amber-100"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M7 3h7l4 4v14H7V3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3v4h4M10 12h5M10 16h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid gap-6 xl:grid-cols-[380px_1fr]">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:sticky xl:top-24 xl:self-start sm:p-6">
+          <div class="flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M16 19c0-2.2-1.8-4-4-4H7c-2.2 0-4 1.8-4 4M9.5 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM18 8v6m-3-3h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Daftarkan Penghuni</h2>
+              <p class="text-xs text-slate-500">Akun otomatis dibuat untuk login penghuni.</p>
+            </div>
+          </div>
+
+          <% if (availableRooms.length === 0) { %>
+            <div class="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-medium text-amber-800">Tidak ada kamar kosong. Tambah atau kosongkan kamar terlebih dahulu.</div>
+          <% } %>
+
+          <form action="/admin/residents" method="post" class="mt-5 space-y-3.5">
+            <div>
+              <label for="name" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Nama Lengkap *</label>
+              <input id="name" name="name" required maxlength="80" placeholder="Nama sesuai KTP" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="username" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Username *</label>
+                <input id="username" name="username" required minlength="3" maxlength="32" autocomplete="off" placeholder="Username unik" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              </div>
+              <div>
+                <label for="password" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Password *</label>
+                <input id="password" name="password" type="password" required minlength="6" maxlength="128" autocomplete="new-password" placeholder="Min. 6 karakter" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              </div>
+            </div>
+            <div>
+              <label for="nik" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">NIK *</label>
+              <input id="nik" name="nik" required inputmode="numeric" pattern="\d{16}" maxlength="16" placeholder="16 digit NIK" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="phone" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Telepon</label>
+                <input id="phone" name="phone" maxlength="20" placeholder="08xxxxxxxxxx" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              </div>
+              <div>
+                <label for="origin" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Asal *</label>
+                <input id="origin" name="origin" required maxlength="80" placeholder="Kota asal" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+              </div>
+            </div>
+            <div>
+              <label for="room_id" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Kamar *</label>
+              <select id="room_id" name="room_id" required <%= availableRooms.length === 0 ? 'disabled' : '' %> class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500 disabled:cursor-not-allowed disabled:text-slate-400">
+                <option value="">Pilih kamar tersedia</option>
+                <% availableRooms.forEach((room) => { %>
+                  <option value="<%= room.id %>">Kamar <%= room.room_number %> &middot; <%= room.room_type %> &middot; <%= formatRupiah(room.monthly_price) %></option>
+                <% }); %>
+              </select>
+            </div>
+            <button type="submit" <%= availableRooms.length === 0 ? 'disabled' : '' %> class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+              Daftarkan Penghuni
+            </button>
+          </form>
+        </div>
+
+        <div class="min-w-0">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Daftar Penghuni</h2>
+              <p class="text-xs text-slate-500"><%= residents.length %> data ditampilkan<%= q ? ' untuk pencarian "' + q + '"' : '' %>.</p>
+            </div>
+            <form action="/admin/residents" method="get" class="relative w-full sm:w-72">
+              <span class="pointer-events-none absolute inset-y-0 left-0 grid w-10 place-items-center text-slate-400">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              </span>
+              <input name="q" value="<%= q %>" type="search" placeholder="Cari nama, NIK, atau kamar" class="w-full rounded-xl border-slate-200 bg-white py-2.5 pl-10 pr-20 text-xs font-semibold shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <button type="submit" class="absolute inset-y-1 right-1 rounded-lg bg-slate-900 px-3 text-[10px] font-bold text-white">Cari</button>
+            </form>
+          </div>
+
+          <% if (residents.length === 0) { %>
+            <div class="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+              <p class="text-sm font-semibold text-slate-600">Tidak ada data penghuni.</p>
+              <p class="mt-1 text-xs text-slate-400">Daftarkan penghuni baru melalui formulir di samping.</p>
+            </div>
+          <% } else { %>
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <% residents.forEach((resident) => { %>
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300">
+                  <div class="flex items-start gap-3">
+                    <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-xs font-extrabold text-white"><%= initials(resident.name) %></div>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <h3 class="truncate text-sm font-extrabold text-slate-900"><%= resident.name %></h3>
+                        <% if (resident.is_active) { %>
+                          <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">Aktif</span>
+                        <% } else { %>
+                          <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-slate-500">Checkout</span>
+                        <% } %>
+                      </div>
+                      <p class="text-[11px] text-slate-400">@<%= resident.username %></p>
+                    </div>
+                    <div class="rounded-lg bg-slate-900 px-2.5 py-1.5 text-center text-white">
+                      <p class="text-[8px] font-bold uppercase tracking-wider text-slate-400">Kamar</p>
+                      <p class="text-xs font-extrabold"><%= resident.room_number || '-' %></p>
+                    </div>
+                  </div>
+
+                  <dl class="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-slate-50 p-3 text-[11px]">
+                    <div class="col-span-2">
+                      <dt class="text-[9px] font-bold uppercase tracking-wider text-slate-400">NIK</dt>
+                      <dd class="mt-0.5 truncate font-semibold text-slate-700"><%= resident.nik || '-' %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Telepon</dt>
+                      <dd class="mt-0.5 truncate font-semibold text-slate-700"><%= resident.phone || '-' %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Asal</dt>
+                      <dd class="mt-0.5 truncate font-semibold text-slate-700"><%= resident.origin || '-' %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Masuk</dt>
+                      <dd class="mt-0.5 truncate font-semibold text-slate-700"><%= formatDate(resident.created_at) %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Laporan RT</dt>
+                      <dd class="mt-0.5">
+                        <% if (resident.reported_to_rt_at) { %>
+                          <span class="font-semibold text-emerald-700">Terkirim</span>
+                        <% } else { %>
+                          <span class="font-semibold text-amber-600">Belum</span>
+                        <% } %>
+                      </dd>
+                    </div>
+                  </dl>
+
+                  <details class="group/details mt-3">
+                    <summary class="flex cursor-pointer list-none items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-[11px] font-bold text-slate-600 transition hover:border-brand-300 hover:text-brand-700">
+                      Kelola Akun
+                      <svg class="h-3.5 w-3.5 transition group-open/details:rotate-180" viewBox="0 0 24 24" fill="none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </summary>
+                    <div class="mt-3 space-y-2 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+                      <form action="/admin/residents/<%= resident.id %>/reset-password" method="post" class="flex gap-2">
+                        <input name="new_password" type="password" minlength="6" maxlength="128" required placeholder="Password baru" class="min-w-0 flex-1 rounded-lg border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold focus:border-brand-500 focus:ring-brand-500">
+                        <button type="submit" class="rounded-lg bg-slate-900 px-3 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800">Reset</button>
+                      </form>
+                      <% if (resident.is_active) { %>
+                        <form action="/admin/residents/<%= resident.id %>/checkout" method="post" data-confirm="Proses checkout <%= resident.name %>? Kamar akan menjadi kosong.">
+                          <button type="submit" class="w-full rounded-lg border border-rose-200 bg-white px-3 py-2 text-[10px] font-bold text-rose-600 transition hover:bg-rose-50">Proses Checkout</button>
+                        </form>
+                      <% } else { %>
+                        <p class="rounded-lg bg-white px-3 py-2 text-center text-[10px] font-semibold text-slate-400">Penghuni sudah checkout.</p>
+                      <% } %>
+                    </div>
+                  </details>
+                </article>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/end') %>

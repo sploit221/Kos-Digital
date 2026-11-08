@@ -1,0 +1,100 @@
+<%- include('../partials/head', { title: 'Cetak Laporan Warga', bodyClass: 'bg-slate-200 text-slate-800', description: 'Dokumen laporan warga baru untuk pihak RT.' }) %>
+
+<div class="no-print sticky top-0 z-30 border-b border-slate-300 bg-slate-100/95 backdrop-blur">
+  <div class="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-brand-600">Pratinjau Cetak</p>
+      <p class="text-sm font-extrabold text-slate-900">Laporan Warga Baru — <%= data.month_label %></p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="/admin/reports/rt?month=<%= data.month %>" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-slate-400">Kembali</a>
+      <button id="printReport" type="button" class="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-brand-700">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="M7 9V3h10v6M7 17H4V9h16v8h-3M7 14h10v7H7v-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        Cetak Sekarang
+      </button>
+    </div>
+  </div>
+</div>
+
+<main class="mx-auto my-6 max-w-4xl px-4 sm:px-6 print:my-0 print:max-w-none print:px-0">
+  <article class="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-xl print:rounded-none print:border-0 print:shadow-none">
+    <header class="bg-brand-700 px-8 py-7 text-white print:bg-brand-700">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p class="text-2xl font-extrabold tracking-tight">KOS DIGITAL</p>
+          <p class="text-[11px] font-medium text-emerald-100">Sistem Pengelolaan Kos Terpadu</p>
+        </div>
+        <div class="sm:text-right">
+          <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-200">Laporan Resmi</p>
+          <p class="text-lg font-extrabold">WARGA BARU</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="space-y-6 px-8 py-7">
+      <section class="flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 class="text-lg font-extrabold text-slate-900"><%= data.profile.name || 'Kos Digital' %></h1>
+          <p class="mt-1 max-w-md text-xs leading-relaxed text-slate-500"><%= data.profile.address || '-' %></p>
+          <p class="mt-1 text-xs text-slate-500">Pengelola: <%= data.profile.manager || '-' %> &middot; Telepon: <%= data.profile.phone || '-' %></p>
+        </div>
+        <div class="rounded-xl bg-slate-50 px-4 py-3 text-xs ring-1 ring-inset ring-slate-200">
+          <div class="flex items-center justify-between gap-6"><span class="text-slate-500">Periode</span><span class="font-extrabold text-brand-700"><%= data.month_label %></span></div>
+          <div class="mt-1.5 flex items-center justify-between gap-6"><span class="text-slate-500">Jumlah warga</span><span class="font-extrabold text-brand-700"><%= data.total %> orang</span></div>
+          <div class="mt-1.5 flex items-center justify-between gap-6"><span class="text-slate-500">Dibuat</span><span class="font-semibold text-slate-700"><%= formatDate(data.generated_at) %></span></div>
+        </div>
+      </section>
+
+      <p class="text-xs leading-relaxed text-slate-600">Dengan hormat, berikut adalah laporan data warga baru yang berdomisili di <b><%= data.profile.name || 'Kos Digital' %></b> pada periode <b><%= data.month_label %></b> untuk disampaikan kepada pihak RT setempat sebagai pemenuhan administrasi kependudukan.</p>
+
+      <div class="overflow-hidden rounded-xl border border-slate-200">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-brand-700 text-white">
+            <tr>
+              <th class="px-3 py-2.5 font-bold">No</th>
+              <th class="px-3 py-2.5 font-bold">Nama Lengkap</th>
+              <th class="px-3 py-2.5 font-bold">NIK</th>
+              <th class="px-3 py-2.5 font-bold">Kamar</th>
+              <th class="px-3 py-2.5 font-bold">Asal</th>
+              <th class="px-3 py-2.5 font-bold">Tgl Masuk</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <% if (data.residents.length === 0) { %>
+              <tr><td colspan="6" class="px-3 py-6 text-center text-slate-400">Belum ada penghuni baru pada periode ini.</td></tr>
+            <% } %>
+            <% data.residents.forEach((resident, index) => { %>
+              <tr class="<%= index % 2 === 1 ? 'bg-slate-50' : 'bg-white' %>">
+                <td class="px-3 py-2.5 font-semibold text-slate-400"><%= String(index + 1).padStart(2, '0') %></td>
+                <td class="px-3 py-2.5 font-bold text-slate-800"><%= resident.name %></td>
+                <td class="px-3 py-2.5 font-mono text-[11px] text-slate-600"><%= resident.nik || '-' %></td>
+                <td class="px-3 py-2.5 font-bold text-slate-800"><%= resident.room_number || '-' %></td>
+                <td class="px-3 py-2.5 text-slate-600"><%= resident.origin || '-' %></td>
+                <td class="px-3 py-2.5 text-slate-600"><%= formatDate(resident.created_at) %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="text-[11px] leading-relaxed text-slate-500">Demikian laporan ini dibuat dengan sebenar-benarnya untuk dapat dipergunakan sebagaimana mestinya. Laporan ini dihasilkan otomatis oleh Sistem Kos Digital.</p>
+
+      <section class="grid grid-cols-2 gap-8 pt-6 text-center text-xs">
+        <div>
+          <p class="text-slate-500">Pengelola Kos</p>
+          <div class="mt-16 border-t border-slate-300 pt-2 font-bold text-slate-700"><%= data.profile.manager || 'Pengelola' %></div>
+        </div>
+        <div>
+          <p class="text-slate-500">Petugas RT</p>
+          <div class="mt-16 border-t border-slate-300 pt-2 font-bold text-slate-700">( ................................ )</div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="border-t border-slate-200 bg-slate-50 px-8 py-3 text-center text-[10px] text-slate-400">
+      Dokumen <%= data.month_label %> &middot; Kos Digital &middot; Dicetak <%= formatDateTime(new Date()) %>
+    </footer>
+  </article>
+</main>
+
+<%- include('../partials/end', { pageScript: 'admin.js' }) %>

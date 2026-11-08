@@ -1,0 +1,159 @@
+<%- include('../partials/head', { title: 'Lapor Kerusakan', bodyClass: 'bg-slate-100 text-slate-800' }) %>
+<div class="min-h-screen">
+  <%- include('../partials/penghuni-sidebar') %>
+  <div class="lg:pl-72">
+    <%- include('../partials/dash-topbar', { title: 'Lapor Kerusakan', subtitle: 'Kirim laporan fasilitas yang rusak dan pantau statusnya.' }) %>
+
+    <main class="space-y-6 p-4 sm:p-6 lg:p-8">
+      <%- include('../partials/flash') %>
+
+      <section class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Total</p>
+          <p class="mt-1.5 text-2xl font-extrabold text-slate-900"><%= stats.total %></p>
+        </div>
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+          <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-600">Pending</p>
+          <p class="mt-1.5 text-2xl font-extrabold text-amber-800"><%= stats.pending %></p>
+        </div>
+        <div class="rounded-2xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
+          <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-600">Diproses</p>
+          <p class="mt-1.5 text-2xl font-extrabold text-sky-800"><%= stats.diproses %></p>
+        </div>
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
+          <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-600">Selesai</p>
+          <p class="mt-1.5 text-2xl font-extrabold text-emerald-800"><%= stats.selesai %></p>
+        </div>
+      </section>
+
+      <section class="grid gap-6 xl:grid-cols-[420px_1fr]">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:sticky xl:top-24 xl:self-start sm:p-6">
+          <div class="flex items-center gap-3">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M14.5 6.5a4 4 0 0 0-5-5L7 4l3 3 2.5-2.5a4 4 0 0 0 2 2ZM9.5 7.5 3 14v4h4l6.5-6.5M13 20l7-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Buat Laporan Baru</h2>
+              <p class="text-xs text-slate-500">Kamar <%= currentUser.room_number || '-' %> &middot; <%= currentUser.name %></p>
+            </div>
+          </div>
+
+          <form action="/penghuni/maintenance" method="post" class="mt-5 space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="category" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Kategori *</label>
+                <select id="category" name="category" required class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+                  <% categories.forEach((category) => { %>
+                    <option value="<%= category %>"><%= category %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div>
+                <label for="priority" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Prioritas *</label>
+                <select id="priority" name="priority" required class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+                  <option value="rendah">Rendah</option>
+                  <option value="sedang" selected>Sedang</option>
+                  <option value="tinggi">Tinggi</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label for="title" class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-slate-500">Judul Laporan *</label>
+              <input id="title" name="title" required minlength="5" maxlength="120" placeholder="Contoh: AC kamar tidak dingin" class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-brand-500 focus:bg-white focus:ring-brand-500">
+            </div>
+            <div>
+              <div class="mb-1 flex items-center justify-between">
+                <label for="description" class="block text-[10px] font-bold uppercase tracking-wider text-slate-500">Deskripsi Kerusakan *</label>
+                <span class="text-[10px] font-semibold text-slate-400"><span data-char-count>0</span>/2000</span>
+              </div>
+              <textarea id="description" name="description" rows="5" required minlength="10" maxlength="2000" data-char-input placeholder="Jelaskan kondisi kerusakan secara detail agar teknisi mudah menindaklanjuti..." class="w-full rounded-xl border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed focus:border-brand-500 focus:bg-white focus:ring-brand-500"></textarea>
+            </div>
+
+            <div class="rounded-xl border border-amber-100 bg-amber-50/70 p-3">
+              <p class="text-[10px] font-semibold leading-relaxed text-amber-800">Laporan akan diterima admin dengan status <b>Pending</b>, lalu berubah menjadi <b>Diproses</b> saat teknisi ditugaskan, dan <b>Selesai</b> setelah perbaikan.</p>
+            </div>
+
+            <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none"><path d="m4 4 17 8-17 8 3-8-3-8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 12h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              Kirim Laporan
+            </button>
+          </form>
+        </div>
+
+        <div class="min-w-0">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900">Riwayat Laporan</h2>
+              <p class="text-xs text-slate-500"><%= reports.length %> laporan tercatat atas nama Anda.</p>
+            </div>
+          </div>
+
+          <% if (reports.length === 0) { %>
+            <div class="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+              <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-emerald-50 text-emerald-600"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none"><path d="m5 12 4.2 4.2L19 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <p class="mt-4 text-sm font-semibold text-slate-600">Belum ada laporan.</p>
+              <p class="mt-1 text-xs text-slate-400">Gunakan formulir di samping jika menemukan fasilitas rusak.</p>
+            </div>
+          <% } else { %>
+            <div class="mt-4 space-y-4">
+              <% reports.forEach((report) => { %>
+                <%
+                  const steps = ['pending', 'diproses', 'selesai'];
+                  const stepIndex = steps.indexOf(report.status);
+                %>
+                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                      <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl <%= report.status === 'selesai' ? 'bg-emerald-50 text-emerald-700' : report.status === 'diproses' ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700' %>">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none"><path d="M14.5 6.5a4 4 0 0 0-5-5L7 4l3 3 2.5-2.5a4 4 0 0 0 2 2ZM9.5 7.5 3 14v4h4l6.5-6.5M13 20l7-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                      <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                          <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-500"><%= report.category %></span>
+                          <span class="rounded-full px-2 py-0.5 text-[9px] font-bold <%= badgeClass(report.priority) %>"><%= priorityLabel(report.priority) %></span>
+                        </div>
+                        <h3 class="mt-1.5 text-sm font-extrabold text-slate-900"><%= report.title %></h3>
+                        <p class="mt-0.5 text-[11px] text-slate-400">Dikirim <%= formatDateTime(report.created_at) %></p>
+                      </div>
+                    </div>
+                    <span class="rounded-full px-2.5 py-1 text-[10px] font-bold <%= badgeClass(report.status) %>"><%= statusLabel(report.status) %></span>
+                  </div>
+
+                  <p class="mt-4 rounded-xl bg-slate-50 p-3 text-xs leading-relaxed text-slate-600"><%= report.description %></p>
+
+                  <% if (report.admin_note) { %>
+                    <div class="mt-3 rounded-xl border border-brand-100 bg-brand-50/60 p-3">
+                      <p class="text-[9px] font-bold uppercase tracking-wider text-brand-700">Catatan Admin</p>
+                      <p class="mt-1 text-xs text-brand-900"><%= report.admin_note %></p>
+                    </div>
+                  <% } %>
+
+                  <div class="mt-4 border-t border-slate-100 pt-4">
+                    <div class="flex items-center">
+                      <% steps.forEach((step, index) => { %>
+                        <div class="flex items-center <%= index < steps.length - 1 ? 'flex-1' : '' %>">
+                          <div class="flex flex-col items-center">
+                            <span class="grid h-6 w-6 place-items-center rounded-full text-[9px] font-extrabold <%= index <= stepIndex ? (step === 'selesai' ? 'bg-emerald-500 text-white' : step === 'diproses' ? 'bg-sky-500 text-white' : 'bg-amber-500 text-white') : 'bg-slate-100 text-slate-400' %>">
+                              <% if (index <= stepIndex) { %>
+                                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none"><path d="m5 12 4.2 4.2L19 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                              <% } else { %><%= index + 1 %><% } %>
+                            </span>
+                            <span class="mt-1 text-[9px] font-bold capitalize <%= index <= stepIndex ? 'text-slate-700' : 'text-slate-400' %>"><%= statusLabel(step) %></span>
+                          </div>
+                          <% if (index < steps.length - 1) { %>
+                            <div class="mx-2 mb-4 h-0.5 flex-1 rounded <%= index < stepIndex ? 'bg-emerald-400' : 'bg-slate-100' %>"></div>
+                          <% } %>
+                        </div>
+                      <% }); %>
+                    </div>
+                  </div>
+                </article>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<%- include('../partials/end') %>
